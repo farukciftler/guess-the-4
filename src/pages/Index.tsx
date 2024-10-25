@@ -1,15 +1,10 @@
 import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { Timer } from "@/components/Timer";
-import { ComputerGuesses } from "@/components/ComputerGuesses";
-import { PlayerGuesses } from "@/components/PlayerGuesses";
-import PlayerGuessInput from "@/components/PlayerGuessInput";
 import { GameResult } from "@/components/GameResult";
+import { GameSetup } from "@/components/GameSetup";
+import { ActiveGame } from "@/components/ActiveGame";
 import { generateSecretNumber, evaluateGuess } from "@/lib/gameLogic";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const { roomId } = useParams();
@@ -157,50 +152,23 @@ const Index = () => {
             onBackToMenu={() => navigate('/')}
           />
         ) : !gameStarted ? (
-          <Card className="p-6 bg-white/80 border-gray-200 backdrop-blur-lg">
-            <h2 className="text-xl mb-4 text-center text-gray-800">Enter your 4-digit number:</h2>
-            <div className="flex gap-4 justify-center">
-              <Input
-                type="text"
-                maxLength={4}
-                value={playerNumber}
-                onChange={(e) => setPlayerNumber(e.target.value)}
-                className="bg-white border-gray-300 w-48"
-                placeholder="Enter 4 unique digits"
-              />
-              <Button 
-                onClick={handleStartGame}
-                className="bg-gradient-to-r from-violet-500 to-teal-500 hover:from-violet-600 hover:to-teal-600"
-              >
-                Start Game
-              </Button>
-            </div>
-          </Card>
+          <GameSetup 
+            playerNumber={playerNumber}
+            setPlayerNumber={setPlayerNumber}
+            onStartGame={handleStartGame}
+          />
         ) : (
-          <div className="space-y-6">
-            <div className="flex justify-center">
-              <Timer
-                isActive={gameStarted}
-                currentTurn={currentTurn}
-                onTimeUp={() => {
-                  setWinner("computer");
-                  setWinningTurn(turnCount);
-                }}
-                timeLimit={timePerPlayer * 60}
-              />
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <PlayerGuesses history={history} />
-              <ComputerGuesses history={history} />
-            </div>
-
-            {currentTurn === "player" && (
-              <div className="flex justify-center">
-                <PlayerGuessInput onGuess={handlePlayerGuess} />
-              </div>
-            )}
-          </div>
+          <ActiveGame
+            gameStarted={gameStarted}
+            currentTurn={currentTurn}
+            onTimeUp={() => {
+              setWinner("computer");
+              setWinningTurn(turnCount);
+            }}
+            timePerPlayer={timePerPlayer}
+            history={history}
+            onGuess={handlePlayerGuess}
+          />
         )}
       </div>
     </div>
