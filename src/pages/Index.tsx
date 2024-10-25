@@ -14,7 +14,7 @@ const Index = () => {
   const { roomId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { isHost, playerName, timePerPlayer } = location.state || {};
+  const { isHost, playerName, timePerPlayer, mode } = location.state || {};
   
   const [playerNumber, setPlayerNumber] = useState("");
   const [opponentNumber, setOpponentNumber] = useState("");
@@ -35,7 +35,12 @@ const Index = () => {
     if (!playerName || !roomId) {
       navigate('/');
     }
-  }, [playerName, roomId, navigate]);
+
+    // If playing against computer, generate computer's number
+    if (mode === "computer") {
+      setOpponentNumber(generateSecretNumber());
+    }
+  }, [playerName, roomId, navigate, mode]);
 
   const isValidNumber = (num: string) => {
     const digits = new Set(num.split(""));
@@ -66,7 +71,7 @@ const Index = () => {
       player: "computer"
     }]);
 
-    if (result === "4+") {
+    if (result === "4+0-") {
       setWinner("computer");
       setWinningTurn(turnCount);
     } else {
@@ -93,14 +98,20 @@ const Index = () => {
       player: "player"
     }]);
 
-    if (result === "4+") {
+    if (result === "4+0-") {
       setWinner("player");
       setWinningTurn(turnCount);
     } else {
       setTurnCount(prev => prev + 1);
       setCurrentTurn("computer");
-      setTimeout(makeComputerGuess, 1000);
+      if (mode === "computer") {
+        setTimeout(makeComputerGuess, 1000);
+      }
     }
+  };
+
+  const getOpponentName = () => {
+    return mode === "computer" ? "Computer" : "Opponent";
   };
 
   return (
@@ -113,6 +124,7 @@ const Index = () => {
           <div className="text-right">
             <div className="text-sm text-gray-600">Room ID: {roomId}</div>
             <div className="text-sm text-gray-600">Player: {playerName}</div>
+            <div className="text-sm text-gray-600">Mode: {mode === "computer" ? "vs Computer" : "Multiplayer"}</div>
           </div>
         </div>
         
@@ -140,7 +152,7 @@ const Index = () => {
           <div className="space-y-6">
             <div className="flex justify-between items-center bg-white/80 p-4 rounded-lg backdrop-blur-lg">
               <div className="text-xl text-gray-800">
-                Turn: {turnCount} | Current: {currentTurn === "player" ? "Your" : "Opponent's"} turn
+                Turn: {turnCount} | Current: {currentTurn === "player" ? "Your" : `${getOpponentName()}'s`} turn
               </div>
               <Timer
                 isActive={gameStarted && !winner}
@@ -159,7 +171,7 @@ const Index = () => {
                   {winner === "player" ? (
                     <span className="text-teal-500">Congratulations! You won!</span>
                   ) : (
-                    <span className="text-violet-500">Game Over! Opponent won!</span>
+                    <span className="text-violet-500">Game Over! {getOpponentName()} won!</span>
                   )}
                 </h2>
                 <p className="text-center mb-4 text-gray-700">Winning turn: {winningTurn}</p>

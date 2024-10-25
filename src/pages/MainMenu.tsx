@@ -34,6 +34,7 @@ export const MainMenu = () => {
         isHost: true, 
         playerName, 
         timePerPlayer: parseInt(timePerPlayer),
+        mode: "multiplayer"
       }
     });
   };
@@ -47,7 +48,28 @@ export const MainMenu = () => {
       });
       return;
     }
-    navigate('/join');
+    navigate('/join', { state: { playerName } });
+  };
+
+  const playVsComputer = () => {
+    if (!playerName) {
+      toast({
+        title: "Error",
+        description: "Please enter your name",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const roomId = "computer-" + Math.random().toString(36).substring(2, 9);
+    navigate(`/room/${roomId}`, {
+      state: { 
+        isHost: true, 
+        playerName, 
+        timePerPlayer: parseInt(timePerPlayer),
+        mode: "computer"
+      }
+    });
   };
 
   return (
@@ -86,10 +108,16 @@ export const MainMenu = () => {
 
             <div className="space-y-3">
               <Button 
+                onClick={playVsComputer}
+                className="w-full bg-gradient-to-r from-violet-500 to-teal-500 hover:from-violet-600 hover:to-teal-600"
+              >
+                Play vs Computer
+              </Button>
+              <Button 
                 onClick={createRoom}
                 className="w-full bg-gradient-to-r from-violet-500 to-teal-500 hover:from-violet-600 hover:to-teal-600"
               >
-                Create Room
+                Create Multiplayer Room
               </Button>
               <Button 
                 onClick={joinRoom}
