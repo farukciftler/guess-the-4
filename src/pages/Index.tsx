@@ -93,27 +93,27 @@ const Index = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
+    <div className="min-h-screen bg-gradient-to-b from-slate-100 to-gray-200 text-gray-900 p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-green-400">
+        <h1 className="text-4xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-teal-500">
           Number Guessing Game
         </h1>
         
         {!gameStarted ? (
-          <Card className="p-6 bg-gray-800 border-gray-700 backdrop-blur-lg bg-opacity-50">
-            <h2 className="text-xl mb-4 text-center">Enter your 4-digit number:</h2>
+          <Card className="p-6 bg-white/80 border-gray-200 backdrop-blur-lg">
+            <h2 className="text-xl mb-4 text-center text-gray-800">Enter your 4-digit number:</h2>
             <div className="flex gap-4 justify-center">
               <Input
                 type="text"
                 maxLength={4}
                 value={playerNumber}
                 onChange={(e) => setPlayerNumber(e.target.value)}
-                className="bg-gray-700 border-gray-600 w-48"
+                className="bg-white border-gray-300 w-48"
                 placeholder="Enter 4 unique digits"
               />
               <Button 
                 onClick={handleStartGame}
-                className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600"
+                className="bg-gradient-to-r from-violet-500 to-teal-500 hover:from-violet-600 hover:to-teal-600"
               >
                 Start Game
               </Button>
@@ -121,8 +121,8 @@ const Index = () => {
           </Card>
         ) : (
           <div className="space-y-6">
-            <div className="flex justify-between items-center bg-gray-800 p-4 rounded-lg backdrop-blur-lg bg-opacity-50">
-              <div className="text-xl">
+            <div className="flex justify-between items-center bg-white/80 p-4 rounded-lg backdrop-blur-lg">
+              <div className="text-xl text-gray-800">
                 Turn: {turnCount} | Current: {currentTurn === "player" ? "Your" : "Computer's"} turn
               </div>
               <Timer
@@ -136,18 +136,18 @@ const Index = () => {
             </div>
 
             {winner ? (
-              <Card className="p-6 bg-gray-800 border-gray-700 backdrop-blur-lg bg-opacity-50">
+              <Card className="p-6 bg-white/80 border-gray-200 backdrop-blur-lg">
                 <h2 className="text-2xl mb-4 text-center">
                   {winner === "player" ? (
-                    <span className="text-green-400">Congratulations! You won!</span>
+                    <span className="text-teal-500">Congratulations! You won!</span>
                   ) : (
-                    <span className="text-blue-400">Game Over! Computer won!</span>
+                    <span className="text-violet-500">Game Over! Computer won!</span>
                   )}
                 </h2>
-                <p className="text-center mb-4">Winning turn: {winningTurn}</p>
+                <p className="text-center mb-4 text-gray-700">Winning turn: {winningTurn}</p>
                 <div className="flex justify-center">
                   <Button
-                    className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600"
+                    className="bg-gradient-to-r from-violet-500 to-teal-500 hover:from-violet-600 hover:to-teal-600"
                     onClick={() => window.location.reload()}
                   >
                     Play Again
@@ -156,7 +156,7 @@ const Index = () => {
               </Card>
             ) : (
               currentTurn === "player" && (
-                <Card className="p-6 bg-gray-800 border-gray-700 backdrop-blur-lg bg-opacity-50">
+                <Card className="p-6 bg-white/80 border-gray-200 backdrop-blur-lg">
                   <PlayerGuessInput onGuess={handlePlayerGuess} />
                 </Card>
               )

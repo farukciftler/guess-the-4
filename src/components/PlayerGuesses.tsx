@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { User } from "lucide-react";
+import { User, CircleDot } from "lucide-react";
 
 interface GuessHistoryItem {
   turn: number;
@@ -15,10 +15,24 @@ interface PlayerGuessesProps {
 export const PlayerGuesses = ({ history }: PlayerGuessesProps) => {
   const playerGuesses = history.filter((entry) => entry.player === "player");
 
+  const renderResult = (result: string) => {
+    const [plus, minus] = result.split("+")[0] === "" ? [0, parseInt(result)] : result.split("+").map(num => parseInt(num));
+    return (
+      <div className="flex gap-1 items-center">
+        {[...Array(plus)].map((_, i) => (
+          <CircleDot key={`plus-${i}`} className="w-4 h-4 text-teal-500 fill-teal-500" />
+        ))}
+        {[...Array(minus)].map((_, i) => (
+          <CircleDot key={`minus-${i}`} className="w-4 h-4 text-amber-500 fill-amber-500" />
+        ))}
+      </div>
+    );
+  };
+
   return (
-    <Card className="bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800">
+    <Card className="bg-teal-50 border-teal-200">
       <CardHeader className="pb-3">
-        <CardTitle className="flex items-center gap-2 text-green-700 dark:text-green-300">
+        <CardTitle className="flex items-center gap-2 text-teal-700">
           <User className="w-5 h-5" />
           Your Guesses
         </CardTitle>
@@ -28,13 +42,11 @@ export const PlayerGuesses = ({ history }: PlayerGuessesProps) => {
           {playerGuesses.map((entry, index) => (
             <div
               key={index}
-              className="flex justify-between items-center p-3 bg-white dark:bg-green-900 rounded-lg shadow-sm"
+              className="flex justify-between items-center p-3 bg-white rounded-lg shadow-sm border border-teal-100"
             >
-              <span className="font-medium">Turn {entry.turn}</span>
-              <span className="text-lg font-bold">{entry.guess}</span>
-              <span className="text-green-600 dark:text-green-300 font-mono">
-                {entry.result}
-              </span>
+              <span className="font-medium text-teal-800">Turn {entry.turn}</span>
+              <span className="text-lg font-bold text-teal-900">{entry.guess}</span>
+              {renderResult(entry.result)}
             </div>
           ))}
         </div>
