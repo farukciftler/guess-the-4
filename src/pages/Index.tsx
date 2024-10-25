@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Card } from "@/components/ui/card";
 import { Timer } from "@/components/Timer";
 import { ComputerGuesses } from "@/components/ComputerGuesses";
 import { PlayerGuesses } from "@/components/PlayerGuesses";
 import PlayerGuessInput from "@/components/PlayerGuessInput";
+import { GameResult } from "@/components/GameResult";
 import { generateSecretNumber, evaluateGuess } from "@/lib/gameLogic";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 
@@ -29,6 +27,7 @@ const Index = () => {
   const [turnCount, setTurnCount] = useState(1);
   const [winner, setWinner] = useState<"player" | "computer" | null>(null);
   const [winningTurn, setWinningTurn] = useState<number | null>(null);
+  const [timeElapsed, setTimeElapsed] = useState(0);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -36,11 +35,20 @@ const Index = () => {
       navigate('/');
     }
 
-    // If playing against computer, generate computer's number
     if (mode === "computer") {
       setOpponentNumber(generateSecretNumber());
     }
   }, [playerName, roomId, navigate, mode]);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (gameStarted && !winner) {
+      interval = setInterval(() => {
+        setTimeElapsed(prev => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [gameStarted, winner]);
 
   const isValidNumber = (num: string) => {
     const digits = new Set(num.split(""));
@@ -128,7 +136,17 @@ const Index = () => {
           </div>
         </div>
         
-        {!gameStarted ? (
+        {winner ? (
+          <GameResult
+            winner={winner}
+            winningTurn={winningTurn}
+            playerName={playerName}
+            opponentName={getOpponentName()}
+            timeElapsed={timeElapsed}
+            history={history}
+            onBackToMenu={() => navigate('/')}
+          />
+        ) : (
           <Card className="p-6 bg-white/80 border-gray-200 backdrop-blur-lg">
             <h2 className="text-xl mb-4 text-center text-gray-800">Enter your 4-digit number:</h2>
             <div className="flex gap-4 justify-center">
@@ -148,55 +166,6 @@ const Index = () => {
               </Button>
             </div>
           </Card>
-        ) : (
-          <div className="space-y-6">
-            <div className="flex justify-between items-center bg-white/80 p-4 rounded-lg backdrop-blur-lg">
-              <div className="text-xl text-gray-800">
-                Turn: {turnCount} | Current: {currentTurn === "player" ? "Your" : `${getOpponentName()}'s`} turn
-              </div>
-              <Timer
-                isActive={gameStarted && !winner}
-                currentTurn={currentTurn}
-                onTimeUp={() => {
-                  setWinner(currentTurn === "player" ? "computer" : "player");
-                  setWinningTurn(turnCount);
-                }}
-                timeLimit={timePerPlayer * 60}
-              />
-            </div>
-
-            {winner ? (
-              <Card className="p-6 bg-white/80 border-gray-200 backdrop-blur-lg">
-                <h2 className="text-2xl mb-4 text-center">
-                  {winner === "player" ? (
-                    <span className="text-teal-500">Congratulations! You won!</span>
-                  ) : (
-                    <span className="text-violet-500">Game Over! {getOpponentName()} won!</span>
-                  )}
-                </h2>
-                <p className="text-center mb-4 text-gray-700">Winning turn: {winningTurn}</p>
-                <div className="flex justify-center">
-                  <Button
-                    className="bg-gradient-to-r from-violet-500 to-teal-500 hover:from-violet-600 hover:to-teal-600"
-                    onClick={() => navigate('/')}
-                  >
-                    Back to Menu
-                  </Button>
-                </div>
-              </Card>
-            ) : (
-              currentTurn === "player" && (
-                <Card className="p-6 bg-white/80 border-gray-200 backdrop-blur-lg">
-                  <PlayerGuessInput onGuess={handlePlayerGuess} />
-                </Card>
-              )
-            )}
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <ComputerGuesses history={history} />
-              <PlayerGuesses history={history} />
-            </div>
-          </div>
         )}
       </div>
     </div>
