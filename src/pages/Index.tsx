@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Card } from "@/components/ui/card";
 import { Timer } from "@/components/Timer";
 import { GameHistory } from "@/components/GameHistory";
+import PlayerGuessInput from "@/components/PlayerGuessInput";
 import { generateSecretNumber, evaluateGuess } from "@/lib/gameLogic";
 
 const Index = () => {

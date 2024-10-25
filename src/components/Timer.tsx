@@ -11,7 +11,7 @@ export const Timer = ({ isActive, currentTurn, onTimeUp }: TimerProps) => {
   const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
 
   useEffect(() => {
-    let interval: number;
+    let interval: NodeJS.Timeout;
     
     if (isActive) {
       interval = setInterval(() => {
