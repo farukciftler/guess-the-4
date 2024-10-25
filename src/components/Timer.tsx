@@ -5,10 +5,11 @@ interface TimerProps {
   isActive: boolean;
   currentTurn: "player" | "computer";
   onTimeUp: () => void;
+  timeLimit?: number;
 }
 
-export const Timer = ({ isActive, currentTurn, onTimeUp }: TimerProps) => {
-  const [timeLeft, setTimeLeft] = useState(300); // 5 minutes in seconds
+export const Timer = ({ isActive, currentTurn, onTimeUp, timeLimit = 300 }: TimerProps) => {
+  const [timeLeft, setTimeLeft] = useState(timeLimit);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -37,7 +38,7 @@ export const Timer = ({ isActive, currentTurn, onTimeUp }: TimerProps) => {
       <div className="text-center mb-2">
         Time Left: {minutes}:{seconds.toString().padStart(2, "0")}
       </div>
-      <Progress value={(timeLeft / 300) * 100} />
+      <Progress value={(timeLeft / timeLimit) * 100} />
     </div>
   );
 };
