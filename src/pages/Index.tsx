@@ -16,6 +16,7 @@ const Index = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { isHost, playerName, timePerPlayer, mode } = location.state || {};
+  const { toast } = useToast();
   
   const [playerNumber, setPlayerNumber] = useState("");
   const [opponentNumber, setOpponentNumber] = useState("");
@@ -31,7 +32,6 @@ const Index = () => {
   const [winner, setWinner] = useState<"player" | "computer" | null>(null);
   const [winningTurn, setWinningTurn] = useState<number | null>(null);
   const [timeElapsed, setTimeElapsed] = useState(0);
-  const { toast } = useToast();
 
   useEffect(() => {
     if (!playerName || !roomId) {
@@ -68,10 +68,14 @@ const Index = () => {
       return;
     }
     setGameStarted(true);
-    makeComputerGuess();
+    setTimeout(() => {
+      makeComputerGuess();
+    }, 1000);
   };
 
   const makeComputerGuess = () => {
+    if (!gameStarted || winner) return;
+    
     const guess = generateSecretNumber();
     const result = evaluateGuess(playerNumber, guess);
     
@@ -87,6 +91,7 @@ const Index = () => {
       setWinningTurn(turnCount);
     } else {
       setCurrentTurn("player");
+      setTurnCount(prev => prev + 1);
     }
   };
 
@@ -116,7 +121,9 @@ const Index = () => {
       setTurnCount(prev => prev + 1);
       setCurrentTurn("computer");
       if (mode === "computer") {
-        setTimeout(makeComputerGuess, 1000);
+        setTimeout(() => {
+          makeComputerGuess();
+        }, 1000);
       }
     }
   };
@@ -149,7 +156,7 @@ const Index = () => {
             history={history}
             onBackToMenu={() => navigate('/')}
           />
-        ) : (
+        ) : !gameStarted ? (
           <Card className="p-6 bg-white/80 border-gray-200 backdrop-blur-lg">
             <h2 className="text-xl mb-4 text-center text-gray-800">Enter your 4-digit number:</h2>
             <div className="flex gap-4 justify-center">
@@ -169,6 +176,31 @@ const Index = () => {
               </Button>
             </div>
           </Card>
+        ) : (
+          <div className="space-y-6">
+            <div className="flex justify-center">
+              <Timer
+                isActive={gameStarted}
+                currentTurn={currentTurn}
+                onTimeUp={() => {
+                  setWinner("computer");
+                  setWinningTurn(turnCount);
+                }}
+                timeLimit={timePerPlayer * 60}
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <PlayerGuesses history={history} />
+              <ComputerGuesses history={history} />
+            </div>
+
+            {currentTurn === "player" && (
+              <div className="flex justify-center">
+                <PlayerGuessInput onGuess={handlePlayerGuess} />
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>
