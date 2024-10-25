@@ -7,6 +7,9 @@ import PlayerGuessInput from "@/components/PlayerGuessInput";
 import { GameResult } from "@/components/GameResult";
 import { generateSecretNumber, evaluateGuess } from "@/lib/gameLogic";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 const Index = () => {
   const { roomId } = useParams();
