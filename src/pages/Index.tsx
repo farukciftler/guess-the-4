@@ -4,7 +4,8 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
 import { Card } from "@/components/ui/card";
 import { Timer } from "@/components/Timer";
-import { GameHistory } from "@/components/GameHistory";
+import { ComputerGuesses } from "@/components/ComputerGuesses";
+import { PlayerGuesses } from "@/components/PlayerGuesses";
 import PlayerGuessInput from "@/components/PlayerGuessInput";
 import { generateSecretNumber, evaluateGuess } from "@/lib/gameLogic";
 
@@ -93,27 +94,34 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-8">
-      <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8">Number Guessing Game</h1>
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-green-400">
+          Number Guessing Game
+        </h1>
         
         {!gameStarted ? (
-          <Card className="p-6 bg-gray-800 border-gray-700">
-            <h2 className="text-xl mb-4">Enter your 4-digit number:</h2>
-            <div className="flex gap-4">
+          <Card className="p-6 bg-gray-800 border-gray-700 backdrop-blur-lg bg-opacity-50">
+            <h2 className="text-xl mb-4 text-center">Enter your 4-digit number:</h2>
+            <div className="flex gap-4 justify-center">
               <Input
                 type="text"
                 maxLength={4}
                 value={playerNumber}
                 onChange={(e) => setPlayerNumber(e.target.value)}
-                className="bg-gray-700 border-gray-600"
+                className="bg-gray-700 border-gray-600 w-48"
                 placeholder="Enter 4 unique digits"
               />
-              <Button onClick={handleStartGame}>Start Game</Button>
+              <Button 
+                onClick={handleStartGame}
+                className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600"
+              >
+                Start Game
+              </Button>
             </div>
           </Card>
         ) : (
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center bg-gray-800 p-4 rounded-lg backdrop-blur-lg bg-opacity-50">
               <div className="text-xl">
                 Turn: {turnCount} | Current: {currentTurn === "player" ? "Your" : "Computer's"} turn
               </div>
@@ -128,27 +136,36 @@ const Index = () => {
             </div>
 
             {winner ? (
-              <Card className="p-6 bg-gray-800 border-gray-700">
-                <h2 className="text-2xl mb-4">
-                  {winner === "player" ? "Congratulations! You won!" : "Game Over! Computer won!"}
+              <Card className="p-6 bg-gray-800 border-gray-700 backdrop-blur-lg bg-opacity-50">
+                <h2 className="text-2xl mb-4 text-center">
+                  {winner === "player" ? (
+                    <span className="text-green-400">Congratulations! You won!</span>
+                  ) : (
+                    <span className="text-blue-400">Game Over! Computer won!</span>
+                  )}
                 </h2>
-                <p>Winning turn: {winningTurn}</p>
-                <Button
-                  className="mt-4"
-                  onClick={() => window.location.reload()}
-                >
-                  Play Again
-                </Button>
+                <p className="text-center mb-4">Winning turn: {winningTurn}</p>
+                <div className="flex justify-center">
+                  <Button
+                    className="bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600"
+                    onClick={() => window.location.reload()}
+                  >
+                    Play Again
+                  </Button>
+                </div>
               </Card>
             ) : (
               currentTurn === "player" && (
-                <Card className="p-6 bg-gray-800 border-gray-700">
+                <Card className="p-6 bg-gray-800 border-gray-700 backdrop-blur-lg bg-opacity-50">
                   <PlayerGuessInput onGuess={handlePlayerGuess} />
                 </Card>
               )
             )}
 
-            <GameHistory history={history} />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <ComputerGuesses history={history} />
+              <PlayerGuesses history={history} />
+            </div>
           </div>
         )}
       </div>
