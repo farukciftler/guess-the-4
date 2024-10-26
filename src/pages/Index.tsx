@@ -4,6 +4,7 @@ import { GameResult } from "@/components/GameResult";
 import { GameSetup } from "@/components/GameSetup";
 import { ActiveGame } from "@/components/ActiveGame";
 import { generateSecretNumber, evaluateGuess } from "@/lib/gameLogic";
+import { makeComputerGuess } from "@/lib/computerStrategy";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Copy, Check } from "lucide-react";
@@ -13,7 +14,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Card } from "@/components/ui/card";
 
 const Index = () => {
   const { roomId } = useParams();
@@ -25,7 +25,7 @@ const Index = () => {
   const [playerNumber, setPlayerNumber] = useState("");
   const [opponentNumber, setOpponentNumber] = useState("");
   const [gameStarted, setGameStarted] = useState(false);
-  const [currentTurn, setCurrentTurn] = useState<"player" | "computer">("computer");
+  const [currentTurn, setCurrentTurn] = useState<"player" | "computer">("player");
   const [history, setHistory] = useState<Array<{
     turn: number;
     guess: string;
@@ -85,16 +85,17 @@ const Index = () => {
     }
     setGameStarted(true);
     if (mode === "computer") {
-      setTimeout(() => {
-        makeComputerGuess();
-      }, 1000);
+      makeComputerMove();
     }
   };
 
-  const makeComputerGuess = () => {
+  const makeComputerMove = () => {
     if (!gameStarted || winner) return;
     
-    const guess = generateSecretNumber();
+    const computerGuesses = history.filter(h => h.player === "computer")
+      .map(h => ({ guess: h.guess, result: h.result }));
+    
+    const guess = makeComputerGuess(computerGuesses);
     const result = evaluateGuess(playerNumber, guess);
     
     setHistory(prev => [...prev, {
@@ -136,13 +137,12 @@ const Index = () => {
       setWinner("player");
       setWinningTurn(turnCount);
     } else {
-      setTurnCount(prev => prev + 1);
       setCurrentTurn("computer");
-      if (mode === "computer") {
-        setTimeout(() => {
-          makeComputerGuess();
-        }, 1000);
-      }
+      setTimeout(() => {
+        if (mode === "computer") {
+          makeComputerMove();
+        }
+      }, 1000);
     }
   };
 
