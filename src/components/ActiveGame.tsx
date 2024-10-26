@@ -41,7 +41,7 @@ export const ActiveGame = ({
         <ComputerGuesses history={history} />
       </div>
 
-      {currentTurn === "player" && (
+      {currentTurn === "player" && gameStarted && (
         <div className="flex justify-center">
           <PlayerGuessInput onGuess={onGuess} />
         </div>
