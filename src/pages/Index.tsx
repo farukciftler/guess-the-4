@@ -5,13 +5,22 @@ import { GameSetup } from "@/components/GameSetup";
 import { ActiveGame } from "@/components/ActiveGame";
 import { generateSecretNumber, evaluateGuess } from "@/lib/gameLogic";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { Copy, Check } from "lucide-react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Card } from "@/components/ui/card";
 
 const Index = () => {
   const { roomId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { isHost, playerName, timePerPlayer, mode } = location.state || {};
   const { toast } = useToast();
+  const { isHost, playerName, timePerPlayer, mode } = location.state || {};
   
   const [playerNumber, setPlayerNumber] = useState("");
   const [opponentNumber, setOpponentNumber] = useState("");
@@ -27,6 +36,8 @@ const Index = () => {
   const [winner, setWinner] = useState<"player" | "computer" | null>(null);
   const [winningTurn, setWinningTurn] = useState<number | null>(null);
   const [timeElapsed, setTimeElapsed] = useState(0);
+  const [hasCopied, setHasCopied] = useState(false);
+  const [opponentJoined, setOpponentJoined] = useState(mode === "computer");
 
   useEffect(() => {
     if (!playerName || !roomId) {
@@ -40,13 +51,23 @@ const Index = () => {
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (gameStarted && !winner) {
+    if (gameStarted && !winner && (mode === "computer" || opponentJoined)) {
       interval = setInterval(() => {
         setTimeElapsed(prev => prev + 1);
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [gameStarted, winner]);
+  }, [gameStarted, winner, mode, opponentJoined]);
+
+  const copyRoomId = async () => {
+    await navigator.clipboard.writeText(roomId || "");
+    setHasCopied(true);
+    toast({
+      title: "Room ID copied!",
+      description: "Share this with your friend to join the game.",
+    });
+    setTimeout(() => setHasCopied(false), 2000);
+  };
 
   const isValidNumber = (num: string) => {
     const digits = new Set(num.split(""));
@@ -63,9 +84,11 @@ const Index = () => {
       return;
     }
     setGameStarted(true);
-    setTimeout(() => {
-      makeComputerGuess();
-    }, 1000);
+    if (mode === "computer") {
+      setTimeout(() => {
+        makeComputerGuess();
+      }, 1000);
+    }
   };
 
   const makeComputerGuess = () => {
@@ -124,7 +147,8 @@ const Index = () => {
   };
 
   const getOpponentName = () => {
-    return mode === "computer" ? "Computer" : "Opponent";
+    if (mode === "computer") return "Computer";
+    return opponentJoined ? "Opponent" : "Waiting for player...";
   };
 
   return (
@@ -134,8 +158,33 @@ const Index = () => {
           <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-teal-500">
             Number Guessing Game
           </h1>
-          <div className="text-right">
-            <div className="text-sm text-gray-600">Room ID: {roomId}</div>
+          <div className="text-right space-y-2">
+            <div className="flex items-center gap-2 justify-end">
+              <div className="text-sm text-gray-600">Room ID: {roomId}</div>
+              {mode === "multiplayer" && (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={copyRoomId}
+                      >
+                        {hasCopied ? (
+                          <Check className="h-4 w-4" />
+                        ) : (
+                          <Copy className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Copy room ID to share with friends</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              )}
+            </div>
             <div className="text-sm text-gray-600">Player: {playerName}</div>
             <div className="text-sm text-gray-600">Mode: {mode === "computer" ? "vs Computer" : "Multiplayer"}</div>
           </div>
@@ -168,6 +217,8 @@ const Index = () => {
             timePerPlayer={timePerPlayer}
             history={history}
             onGuess={handlePlayerGuess}
+            showTimer={mode === "computer" || opponentJoined}
+            opponentName={getOpponentName()}
           />
         )}
       </div>

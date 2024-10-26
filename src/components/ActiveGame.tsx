@@ -15,6 +15,8 @@ interface ActiveGameProps {
     player: "player" | "computer";
   }>;
   onGuess: (guess: string) => void;
+  showTimer: boolean;
+  opponentName: string;
 }
 
 export const ActiveGame = ({
@@ -23,22 +25,26 @@ export const ActiveGame = ({
   onTimeUp,
   timePerPlayer,
   history,
-  onGuess
+  onGuess,
+  showTimer,
+  opponentName
 }: ActiveGameProps) => {
   return (
     <div className="space-y-6">
       <div className="flex justify-center">
-        <Timer
-          isActive={gameStarted}
-          currentTurn={currentTurn}
-          onTimeUp={onTimeUp}
-          timeLimit={timePerPlayer * 60}
-        />
+        {showTimer && (
+          <Timer
+            isActive={gameStarted}
+            currentTurn={currentTurn}
+            onTimeUp={onTimeUp}
+            timeLimit={timePerPlayer * 60}
+          />
+        )}
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <PlayerGuesses history={history} />
-        <ComputerGuesses history={history} />
+        <ComputerGuesses history={history} opponentName={opponentName} />
       </div>
 
       {currentTurn === "player" && gameStarted && (

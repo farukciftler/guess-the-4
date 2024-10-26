@@ -10,9 +10,10 @@ interface GuessHistoryItem {
 
 interface ComputerGuessesProps {
   history: GuessHistoryItem[];
+  opponentName: string;
 }
 
-export const ComputerGuesses = ({ history }: ComputerGuessesProps) => {
+export const ComputerGuesses = ({ history, opponentName }: ComputerGuessesProps) => {
   const computerGuesses = history.filter((entry) => entry.player === "computer");
 
   const renderResult = (result: string) => {
@@ -34,7 +35,7 @@ export const ComputerGuesses = ({ history }: ComputerGuessesProps) => {
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center gap-2 text-violet-700">
           <Computer className="w-5 h-5" />
-          Computer's Guesses
+          {opponentName}
         </CardTitle>
       </CardHeader>
       <CardContent>
