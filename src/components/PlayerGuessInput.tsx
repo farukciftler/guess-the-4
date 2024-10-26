@@ -28,18 +28,18 @@ const PlayerGuessInput = ({ onGuess }: PlayerGuessInputProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex gap-4">
+    <form onSubmit={handleSubmit} className="flex gap-2 md:gap-4 w-full max-w-lg mx-auto">
       <Input
         type="text"
         maxLength={4}
         value={guess}
         onChange={(e) => setGuess(e.target.value)}
-        className="bg-white border-gray-300 w-48"
+        className="bg-white border-gray-300 flex-1"
         placeholder="Enter your guess"
       />
       <Button 
         type="submit"
-        className="bg-gradient-to-r from-violet-500 to-teal-500 hover:from-violet-600 hover:to-teal-600"
+        className="bg-gradient-to-r from-violet-500 to-teal-500 hover:from-violet-600 hover:to-teal-600 whitespace-nowrap"
       >
         Submit Guess
       </Button>

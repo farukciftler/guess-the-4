@@ -30,7 +30,7 @@ export const ActiveGame = ({
   opponentName
 }: ActiveGameProps) => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-24 relative min-h-[calc(100vh-16rem)]">
       <div className="flex justify-center">
         {showTimer && (
           <Timer
@@ -42,14 +42,16 @@ export const ActiveGame = ({
         )}
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <PlayerGuesses history={history} />
         <ComputerGuesses history={history} opponentName={opponentName} />
       </div>
 
       {currentTurn === "player" && gameStarted && (
-        <div className="flex justify-center">
-          <PlayerGuessInput onGuess={onGuess} />
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/80 backdrop-blur-sm border-t border-gray-200">
+          <div className="max-w-4xl mx-auto">
+            <PlayerGuessInput onGuess={onGuess} />
+          </div>
         </div>
       )}
     </div>
