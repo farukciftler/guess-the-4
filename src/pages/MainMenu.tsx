@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
+import { HelpCircle } from "lucide-react";
 
 export const MainMenu = () => {
   const [playerName, setPlayerName] = useState("");
@@ -125,6 +126,14 @@ export const MainMenu = () => {
                 className="w-full"
               >
                 Join Room
+              </Button>
+              <Button 
+                onClick={() => navigate('/how-to-play')}
+                variant="outline"
+                className="w-full flex items-center gap-2"
+              >
+                <HelpCircle className="w-4 h-4" />
+                How to Play
               </Button>
             </div>
           </div>
