@@ -16,6 +16,8 @@ interface GameResultProps {
     player: "player" | "computer";
   }>;
   onBackToMenu: () => void;
+  playerNumber: string;
+  opponentNumber: string;
 }
 
 export const GameResult = ({ 
@@ -25,7 +27,9 @@ export const GameResult = ({
   opponentName,
   timeElapsed,
   history,
-  onBackToMenu 
+  onBackToMenu,
+  playerNumber,
+  opponentNumber
 }: GameResultProps) => {
   if (!winner || !winningTurn) return null;
 
@@ -39,6 +43,8 @@ export const GameResult = ({
         opponentName={opponentName}
         history={history}
         format="story"
+        playerNumber={playerNumber}
+        opponentNumber={opponentNumber}
       />
       <div className="mt-4 flex justify-center">
         <Button

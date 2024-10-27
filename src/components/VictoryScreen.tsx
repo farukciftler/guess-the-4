@@ -69,6 +69,10 @@ export const VictoryScreen = ({
 
   const shareImage = async () => {
     if (!cardRef.current) return;
+    const canvas = await html2canvas(cardRef.current, {
+      backgroundColor: null,
+      scale: 2
+    });
     canvas.toBlob(async (blob) => {
       if (!blob) return;
       try {
