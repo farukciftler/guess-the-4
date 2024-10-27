@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Share2, Square, Smartphone } from 'lucide-react';
+import { Share2, Square, CircleDot } from 'lucide-react';
 import html2canvas from 'html2canvas';
 
 interface VictoryScreenProps {
@@ -17,6 +17,8 @@ interface VictoryScreenProps {
     player: "player" | "computer";
   }>;
   format?: "story" | "square";
+  playerNumber: string;
+  opponentNumber: string;
 }
 
 export const VictoryScreen = ({ 
@@ -26,24 +28,38 @@ export const VictoryScreen = ({
   playerName,
   opponentName,
   history,
-  format = "story" 
+  format = "story",
+  playerNumber,
+  opponentNumber
 }: VictoryScreenProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const minutes = Math.floor(timeElapsed / 60);
   const seconds = timeElapsed % 60;
 
-  const playerTurns = history.filter(h => h.player === "player").length;
-  const opponentTurns = history.filter(h => h.player === "computer").length;
+  const playerGuesses = history.filter(h => h.player === "player");
+  const opponentGuesses = history.filter(h => h.player === "computer");
+
+  const renderResult = (result: string) => {
+    const [plus, minus] = result.split("+")[0] === "" ? [0, parseInt(result)] : result.split("+").map(num => parseInt(num));
+    return (
+      <div className="flex gap-1 items-center">
+        {[...Array(plus)].map((_, i) => (
+          <CircleDot key={`plus-${i}`} className="w-3 h-3 text-violet-500 fill-violet-500" />
+        ))}
+        {[...Array(minus)].map((_, i) => (
+          <CircleDot key={`minus-${i}`} className="w-3 h-3 text-amber-500 fill-amber-500" />
+        ))}
+      </div>
+    );
+  };
 
   const downloadImage = async () => {
     if (!cardRef.current) return;
-    
     const canvas = await html2canvas(cardRef.current, {
       backgroundColor: null,
       scale: 2
     });
-    
     const image = canvas.toDataURL("image/png");
     const link = document.createElement("a");
     link.href = image;
@@ -53,12 +69,6 @@ export const VictoryScreen = ({
 
   const shareImage = async () => {
     if (!cardRef.current) return;
-    
-    const canvas = await html2canvas(cardRef.current, {
-      backgroundColor: null,
-      scale: 2
-    });
-    
     canvas.toBlob(async (blob) => {
       if (!blob) return;
       try {
@@ -76,49 +86,71 @@ export const VictoryScreen = ({
     <div className="flex flex-col items-center gap-4">
       <div 
         ref={cardRef}
-        className={`relative overflow-hidden bg-gradient-to-br from-violet-500 to-teal-500 text-white p-8 ${
+        className={`relative overflow-hidden bg-gray-50 text-gray-900 p-8 rounded-lg shadow-lg ${
           format === "story" ? "w-[360px] h-[640px]" : "w-[600px] h-[600px]"
         }`}
       >
-        <div className="absolute inset-0 bg-black/10" />
-        <div className="relative z-10 h-full flex flex-col justify-between">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold mb-2">Number Guessing Game</h1>
-            <div className="text-2xl font-semibold mb-8">
-              {winner === "player" ? "Victory!" : "Game Over!"}
+        <div className="h-full flex flex-col">
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-bold mb-2">Game Summary</h1>
+            <div className="text-xl font-semibold text-violet-600">
+              {winner === "player" ? `${playerName} Won!` : `${opponentName} Won!`}
             </div>
           </div>
 
-          <div className="space-y-6 text-center flex-1 flex flex-col justify-center">
-            <div className="text-xl">
-              <div className="mb-4">
-                {winner === "player" ? (
-                  <span className="text-2xl font-bold">{playerName} Won!</span>
-                ) : (
-                  <span className="text-2xl font-bold">{opponentName} Won!</span>
-                )}
-              </div>
-              <div className="space-y-2">
-                <p>Winning Turn: {winningTurn}</p>
-                <p>Time: {minutes}m {seconds}s</p>
-                <p>{playerName}'s Turns: {playerTurns}</p>
-                <p>{opponentName}'s Turns: {opponentTurns}</p>
-              </div>
+          <div className="grid grid-cols-2 gap-4 mb-6">
+            <div className="space-y-2">
+              <div className="font-semibold text-violet-700">{playerName}</div>
+              <div className="text-sm">Secret: {playerNumber}</div>
+            </div>
+            <div className="space-y-2">
+              <div className="font-semibold text-teal-700">{opponentName}</div>
+              <div className="text-sm">Secret: {opponentNumber}</div>
             </div>
           </div>
 
-          <div className="text-sm text-center opacity-75">
-            Play at yourgame.com
+          <div className="flex-1 grid grid-cols-2 gap-4 overflow-y-auto">
+            <div className="space-y-2">
+              <div className="font-medium mb-2">Your Guesses:</div>
+              {playerGuesses.map((guess, index) => (
+                <div key={index} className="flex items-center justify-between bg-white p-2 rounded-lg text-sm">
+                  <span>{guess.guess}</span>
+                  {renderResult(guess.result)}
+                </div>
+              ))}
+            </div>
+            <div className="space-y-2">
+              <div className="font-medium mb-2">{opponentName}'s Guesses:</div>
+              {opponentGuesses.map((guess, index) => (
+                <div key={index} className="flex items-center justify-between bg-white p-2 rounded-lg text-sm">
+                  <span>{guess.guess}</span>
+                  {renderResult(guess.result)}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-6 pt-4 border-t border-gray-200">
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <div className="font-medium">Game Duration</div>
+                <div>{minutes}m {seconds}s</div>
+              </div>
+              <div>
+                <div className="font-medium">Winning Turn</div>
+                <div>Turn {winningTurn}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
       <div className="flex gap-2">
-        <Button onClick={() => downloadImage()} variant="outline">
+        <Button onClick={downloadImage} variant="outline">
           <Square className="w-4 h-4 mr-2" />
           Download
         </Button>
-        <Button onClick={() => shareImage()}>
+        <Button onClick={shareImage}>
           <Share2 className="w-4 h-4 mr-2" />
           Share
         </Button>
