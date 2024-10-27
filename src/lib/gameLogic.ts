@@ -12,6 +12,11 @@ export const generateSecretNumber = (): string => {
 };
 
 export const evaluateGuess = (secret: string, guess: string): string => {
+  // Validate inputs
+  if (!secret || !guess || secret.length !== 4 || guess.length !== 4) {
+    return "0+0-";
+  }
+
   let plus = 0;
   let minus = 0;
   
