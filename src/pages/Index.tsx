@@ -199,6 +199,8 @@ const Index = () => {
             timeElapsed={timeElapsed}
             history={history}
             onBackToMenu={() => navigate('/')}
+            playerNumber={playerNumber}
+            opponentNumber={opponentNumber}
           />
         ) : !gameStarted ? (
           <GameSetup 
