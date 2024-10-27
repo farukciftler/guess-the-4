@@ -3,6 +3,13 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Share2, Square, CircleDot } from 'lucide-react';
 import html2canvas from 'html2canvas';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface VictoryScreenProps {
   winner: "player" | "computer";
@@ -28,11 +35,12 @@ export const VictoryScreen = ({
   playerName,
   opponentName,
   history,
-  format = "story",
   playerNumber,
   opponentNumber
 }: VictoryScreenProps) => {
-  const cardRef = useRef<HTMLDivElement>(null);
+  const wideRef = useRef<HTMLDivElement>(null);
+  const tallRef = useRef<HTMLDivElement>(null);
+  const squareRef = useRef<HTMLDivElement>(null);
 
   const minutes = Math.floor(timeElapsed / 60);
   const seconds = timeElapsed % 60;
@@ -54,9 +62,9 @@ export const VictoryScreen = ({
     );
   };
 
-  const downloadImage = async () => {
-    if (!cardRef.current) return;
-    const canvas = await html2canvas(cardRef.current, {
+  const downloadImage = async (ref: React.RefObject<HTMLDivElement>, format: string) => {
+    if (!ref.current) return;
+    const canvas = await html2canvas(ref.current, {
       backgroundColor: null,
       scale: 2
     });
@@ -67,9 +75,9 @@ export const VictoryScreen = ({
     link.click();
   };
 
-  const shareImage = async () => {
-    if (!cardRef.current) return;
-    const canvas = await html2canvas(cardRef.current, {
+  const shareImage = async (ref: React.RefObject<HTMLDivElement>) => {
+    if (!ref.current) return;
+    const canvas = await html2canvas(ref.current, {
       backgroundColor: null,
       scale: 2
     });
@@ -86,75 +94,100 @@ export const VictoryScreen = ({
     });
   };
 
-  return (
-    <div className="flex flex-col items-center gap-4">
-      <div 
-        ref={cardRef}
-        className={`relative overflow-hidden bg-gray-50 text-gray-900 p-8 rounded-lg shadow-lg ${
-          format === "story" ? "w-[360px] h-[640px]" : "w-[600px] h-[600px]"
-        }`}
-      >
-        <div className="h-full flex flex-col">
-          <div className="text-center mb-6">
-            <h1 className="text-2xl font-bold mb-2">Game Summary</h1>
-            <div className="text-xl font-semibold text-violet-600">
-              {winner === "player" ? `${playerName} Won!` : `${opponentName} Won!`}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div className="space-y-2">
-              <div className="font-semibold text-violet-700">{playerName}</div>
-              <div className="text-sm">Secret: {playerNumber}</div>
-            </div>
-            <div className="space-y-2">
-              <div className="font-semibold text-teal-700">{opponentName}</div>
-              <div className="text-sm">Secret: {opponentNumber}</div>
-            </div>
-          </div>
-
-          <div className="flex-1 grid grid-cols-2 gap-4 overflow-y-auto">
-            <div className="space-y-2">
-              <div className="font-medium mb-2">Your Guesses:</div>
-              {playerGuesses.map((guess, index) => (
-                <div key={index} className="flex items-center justify-between bg-white p-2 rounded-lg text-sm">
-                  <span>{guess.guess}</span>
-                  {renderResult(guess.result)}
-                </div>
-              ))}
-            </div>
-            <div className="space-y-2">
-              <div className="font-medium mb-2">{opponentName}'s Guesses:</div>
-              {opponentGuesses.map((guess, index) => (
-                <div key={index} className="flex items-center justify-between bg-white p-2 rounded-lg text-sm">
-                  <span>{guess.guess}</span>
-                  {renderResult(guess.result)}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-6 pt-4 border-t border-gray-200">
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <div className="font-medium">Game Duration</div>
-                <div>{minutes}m {seconds}s</div>
-              </div>
-              <div>
-                <div className="font-medium">Winning Turn</div>
-                <div>Turn {winningTurn}</div>
-              </div>
-            </div>
-          </div>
+  const renderGameSummary = (className: string) => (
+    <div className={`h-full flex flex-col ${className}`}>
+      <div className="text-center mb-4">
+        <h1 className="text-2xl font-bold mb-2">Game Summary</h1>
+        <div className="text-xl font-semibold text-violet-600">
+          {winner === "player" ? `${playerName} Won!` : `${opponentName} Won!`}
         </div>
       </div>
 
+      <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="space-y-1">
+          <div className="font-semibold text-violet-700">{playerName}</div>
+          <div className="text-sm">Secret: {playerNumber}</div>
+        </div>
+        <div className="space-y-1">
+          <div className="font-semibold text-teal-700">{opponentName}</div>
+          <div className="text-sm">Secret: {opponentNumber}</div>
+        </div>
+      </div>
+
+      <div className="flex-1 grid grid-cols-2 gap-4 overflow-y-auto">
+        <div className="space-y-2">
+          <div className="font-medium mb-2">Your Guesses:</div>
+          {playerGuesses.map((guess, index) => (
+            <div key={index} className="flex items-center justify-between bg-white p-2 rounded-lg text-sm">
+              <span>{guess.guess}</span>
+              {renderResult(guess.result)}
+            </div>
+          ))}
+        </div>
+        <div className="space-y-2">
+          <div className="font-medium mb-2">{opponentName}'s Guesses:</div>
+          {opponentGuesses.map((guess, index) => (
+            <div key={index} className="flex items-center justify-between bg-white p-2 rounded-lg text-sm">
+              <span>{guess.guess}</span>
+              {renderResult(guess.result)}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-4 pt-4 border-t border-gray-200">
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div>
+            <div className="font-medium">Game Duration</div>
+            <div>{minutes}m {seconds}s</div>
+          </div>
+          <div>
+            <div className="font-medium">Winning Turn</div>
+            <div>Turn {winningTurn}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col items-center gap-4">
+      <Carousel className="w-full max-w-xl">
+        <CarouselContent>
+          <CarouselItem>
+            <div ref={wideRef} className="relative overflow-hidden bg-gray-50 text-gray-900 p-6 rounded-lg shadow-lg w-full aspect-video">
+              {renderGameSummary("text-sm")}
+            </div>
+          </CarouselItem>
+          <CarouselItem>
+            <div ref={tallRef} className="relative overflow-hidden bg-gray-50 text-gray-900 p-6 rounded-lg shadow-lg w-full aspect-[3/4]">
+              {renderGameSummary("text-xs")}
+            </div>
+          </CarouselItem>
+          <CarouselItem>
+            <div ref={squareRef} className="relative overflow-hidden bg-gray-50 text-gray-900 p-6 rounded-lg shadow-lg w-full aspect-square">
+              {renderGameSummary("text-xs")}
+            </div>
+          </CarouselItem>
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
+
       <div className="flex gap-2">
-        <Button onClick={downloadImage} variant="outline">
+        <Button onClick={() => downloadImage(wideRef, '16-9')} variant="outline">
           <Square className="w-4 h-4 mr-2" />
-          Download
+          Download 16:9
         </Button>
-        <Button onClick={shareImage}>
+        <Button onClick={() => downloadImage(tallRef, '4-3')} variant="outline">
+          <Square className="w-4 h-4 mr-2" />
+          Download 4:3
+        </Button>
+        <Button onClick={() => downloadImage(squareRef, '1-1')} variant="outline">
+          <Square className="w-4 h-4 mr-2" />
+          Download 1:1
+        </Button>
+        <Button onClick={() => shareImage(wideRef)}>
           <Share2 className="w-4 h-4 mr-2" />
           Share
         </Button>
