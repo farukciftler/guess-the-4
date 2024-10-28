@@ -14,10 +14,16 @@ interface ComputerGuessesProps {
 }
 
 export const ComputerGuesses = ({ history, opponentName }: ComputerGuessesProps) => {
-  const computerGuesses = history.filter((entry) => entry.player === "computer");
+  // Filter only computer guesses and sort them by turn number to ensure proper order
+  const computerGuesses = history
+    .filter((entry) => entry.player === "computer")
+    .sort((a, b) => a.turn - b.turn);
 
   const renderResult = (result: string) => {
-    const [plus, minus] = result.split("+")[0] === "" ? [0, parseInt(result)] : result.split("+").map(num => parseInt(num));
+    const [plus, minus] = result.split("+")[0] === "" 
+      ? [0, parseInt(result)] 
+      : result.split("+").map(num => parseInt(num));
+      
     return (
       <div className="flex gap-1 items-center">
         {[...Array(plus)].map((_, i) => (
@@ -42,7 +48,7 @@ export const ComputerGuesses = ({ history, opponentName }: ComputerGuessesProps)
         <div className="space-y-1.5 md:space-y-2">
           {computerGuesses.map((entry, index) => (
             <div
-              key={index}
+              key={`${entry.turn}-${index}`}
               className="flex justify-between items-center p-2 md:p-3 bg-white rounded-lg shadow-sm border border-violet-100 text-sm md:text-base"
             >
               <span className="font-medium text-violet-800">Turn {entry.turn}</span>
