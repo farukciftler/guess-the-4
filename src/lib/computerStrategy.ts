@@ -16,28 +16,34 @@ const filterPossibleNumbers = (
   guess: string,
   feedback: string
 ) => {
-  const [plus, minus] = feedback.split("+").map(n => parseInt(n));
+  const [plus, minus] = feedback.split("+")[0] === "" 
+    ? [0, parseInt(feedback)] 
+    : feedback.split("+").map(n => parseInt(n));
   
   return possibleNumbers.filter(num => {
     let exactMatches = 0;
     let partialMatches = 0;
     const usedIndices = new Set<number>();
+    const usedGuessIndices = new Set<number>();
     
     // Count exact matches
     for (let i = 0; i < 4; i++) {
       if (num[i] === guess[i]) {
         exactMatches++;
         usedIndices.add(i);
+        usedGuessIndices.add(i);
       }
     }
     
     // Count partial matches
     for (let i = 0; i < 4; i++) {
       if (!usedIndices.has(i)) {
-        const index = num.indexOf(guess[i]);
-        if (index !== -1 && !usedIndices.has(index) && num[i] !== guess[i]) {
-          partialMatches++;
-          usedIndices.add(index);
+        for (let j = 0; j < 4; j++) {
+          if (!usedGuessIndices.has(j) && num[i] === guess[j]) {
+            partialMatches++;
+            usedGuessIndices.add(j);
+            break;
+          }
         }
       }
     }
@@ -50,9 +56,18 @@ export const makeComputerGuess = (previousGuesses: Array<{guess: string, result:
   let possibleNumbers = generateAllPossibleNumbers();
   
   // Filter based on previous guesses and their feedback
-  previousGuesses.forEach(({guess, result}) => {
-    possibleNumbers = filterPossibleNumbers(possibleNumbers, guess, result.split("-")[0]);
-  });
+  for (const {guess, result} of previousGuesses) {
+    const newPossibleNumbers = filterPossibleNumbers(possibleNumbers, guess, result.split("-")[0]);
+    // If filtering results in no possible numbers, keep the previous set
+    if (newPossibleNumbers.length > 0) {
+      possibleNumbers = newPossibleNumbers;
+    }
+  }
+  
+  // If no possibilities found, generate a new random number
+  if (possibleNumbers.length === 0) {
+    possibleNumbers = generateAllPossibleNumbers();
+  }
   
   // Return a random number from remaining possibilities
   return possibleNumbers[Math.floor(Math.random() * possibleNumbers.length)];
