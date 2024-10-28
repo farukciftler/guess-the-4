@@ -41,6 +41,7 @@ export const GameResult = ({
         timeElapsed={timeElapsed}
         playerName={playerName}
         opponentName={opponentName}
+        opponentTimeElapsed={timeElapsed} // Using same timeElapsed for now since we don't track opponent time separately
         history={history}
         format="story"
         playerNumber={playerNumber}
