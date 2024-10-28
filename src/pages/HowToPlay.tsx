@@ -1,4 +1,5 @@
 import { Card } from "@/components/ui/card";
+import { CircleDot } from "lucide-react";
 
 export const HowToPlay = () => {
   return (
@@ -34,20 +35,36 @@ export const HowToPlay = () => {
           </Card>
 
           <Card className="p-4 bg-white/80 backdrop-blur-lg">
+            <h2 className="text-lg sm:text-xl font-semibold mb-2 text-violet-600">Feedback Colors</h2>
+            <div className="space-y-2 text-sm sm:text-base text-gray-600">
+              <div className="flex items-center gap-2">
+                <CircleDot className="w-4 h-4 text-violet-500 fill-violet-500" />
+                <span>Purple circle: Correct digit in correct position (+)</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CircleDot className="w-4 h-4 text-amber-500 fill-amber-500" />
+                <span>Orange circle: Correct digit in wrong position (-)</span>
+              </div>
+            </div>
+          </Card>
+
+          <Card className="p-4 bg-white/80 backdrop-blur-lg">
             <h2 className="text-lg sm:text-xl font-semibold mb-2 text-violet-600">Example</h2>
             <p className="text-sm sm:text-base text-gray-600">
               Secret number: 1234
               <br />
               Guess: 1543
               <br />
-              Result: 1+ 2- (1 is correct position, 3 and 4 are correct digits but wrong positions)
+              Result: <CircleDot className="inline w-4 h-4 text-violet-500 fill-violet-500" /> <CircleDot className="inline w-4 h-4 text-amber-500 fill-amber-500" /> <CircleDot className="inline w-4 h-4 text-amber-500 fill-amber-500" />
+              <br />
+              (1 is in correct position, 3 and 4 are correct digits but wrong positions)
             </p>
           </Card>
 
           <Card className="p-4 bg-white/80 backdrop-blur-lg">
             <h2 className="text-lg sm:text-xl font-semibold mb-2 text-violet-600">Winning</h2>
             <p className="text-sm sm:text-base text-gray-600">
-              • First player to correctly guess their opponent's number (4+0-) wins
+              • First player to correctly guess their opponent's number (4 purple circles) wins
               <br />
               • The game tracks turns and time taken by each player
               <br />
