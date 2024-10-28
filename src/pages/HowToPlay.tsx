@@ -1,73 +1,60 @@
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
-import { CircleDot } from "lucide-react";
 
 export const HowToPlay = () => {
-  const navigate = useNavigate();
-
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-100 to-gray-200 text-gray-900 p-8">
+    <div className="min-h-screen bg-gradient-to-b from-slate-100 to-gray-200 p-4 sm:p-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-teal-500">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-teal-500">
           How to Play
         </h1>
+        
+        <div className="space-y-4">
+          <Card className="p-4 bg-white/80 backdrop-blur-lg">
+            <h2 className="text-lg sm:text-xl font-semibold mb-2 text-violet-600">Game Setup</h2>
+            <p className="text-sm sm:text-base text-gray-600">
+              1. Choose a secret 4-digit number with unique digits (e.g., 1234, 5678)
+              <br />
+              2. Your opponent will try to guess your number while you try to guess theirs
+              <br />
+              3. Take turns making guesses until someone wins
+            </p>
+          </Card>
 
-        <Card className="p-6 bg-white/80 border-gray-200 backdrop-blur-lg space-y-6">
-          <div className="space-y-4">
-            <section>
-              <h2 className="text-2xl font-semibold mb-2">Game Rules</h2>
-              <p className="text-gray-700">
-                Each player chooses a secret 4-digit number where all digits are different. Players take turns trying to guess each other's number.
-              </p>
-            </section>
+          <Card className="p-4 bg-white/80 backdrop-blur-lg">
+            <h2 className="text-lg sm:text-xl font-semibold mb-2 text-violet-600">Making Guesses</h2>
+            <p className="text-sm sm:text-base text-gray-600">
+              • Each guess must be a 4-digit number with unique digits
+              <br />
+              • After each guess, you'll receive feedback in the form of + and -
+              <br />
+              • + means correct digit in correct position
+              <br />
+              • - means correct digit in wrong position
+            </p>
+          </Card>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-2">Feedback System</h2>
-              <div className="space-y-3">
-                <div className="flex items-center gap-2">
-                  <CircleDot className="w-5 h-5 text-violet-500 fill-violet-500" />
-                  <span>Purple circle: Correct digit in correct position</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <CircleDot className="w-5 h-5 text-amber-500 fill-amber-500" />
-                  <span>Yellow circle: Correct digit in wrong position</span>
-                </div>
-              </div>
-            </section>
+          <Card className="p-4 bg-white/80 backdrop-blur-lg">
+            <h2 className="text-lg sm:text-xl font-semibold mb-2 text-violet-600">Example</h2>
+            <p className="text-sm sm:text-base text-gray-600">
+              Secret number: 1234
+              <br />
+              Guess: 1543
+              <br />
+              Result: 1+ 2- (1 is correct position, 3 and 4 are correct digits but wrong positions)
+            </p>
+          </Card>
 
-            <section>
-              <h2 className="text-2xl font-semibold mb-2">Example</h2>
-              <div className="space-y-2">
-                <p>Secret number: 1234</p>
-                <p>Guess: 1543</p>
-                <div className="flex items-center gap-2">
-                  <span>Result:</span>
-                  <CircleDot className="w-4 h-4 text-violet-500 fill-violet-500" />
-                  <CircleDot className="w-4 h-4 text-violet-500 fill-violet-500" />
-                  <CircleDot className="w-4 h-4 text-amber-500 fill-amber-500" />
-                </div>
-                <p className="text-sm text-gray-600">
-                  (2 correct positions: 1 and 4, 1 correct digit in wrong position: 3)
-                </p>
-              </div>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-semibold mb-2">Winning</h2>
-              <p className="text-gray-700">
-                The first player to correctly guess their opponent's number wins the game!
-              </p>
-            </section>
-          </div>
-
-          <Button 
-            onClick={() => navigate('/')}
-            className="w-full bg-gradient-to-r from-violet-500 to-teal-500 hover:from-violet-600 hover:to-teal-600"
-          >
-            Back to Menu
-          </Button>
-        </Card>
+          <Card className="p-4 bg-white/80 backdrop-blur-lg">
+            <h2 className="text-lg sm:text-xl font-semibold mb-2 text-violet-600">Winning</h2>
+            <p className="text-sm sm:text-base text-gray-600">
+              • First player to correctly guess their opponent's number (4+0-) wins
+              <br />
+              • The game tracks turns and time taken by each player
+              <br />
+              • You can play against the computer or challenge a friend
+            </p>
+          </Card>
+        </div>
       </div>
     </div>
   );
