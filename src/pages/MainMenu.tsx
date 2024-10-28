@@ -12,18 +12,21 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { HelpCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 export const MainMenu = () => {
   const [playerName, setPlayerName] = useState("");
   const [timePerPlayer, setTimePerPlayer] = useState("5");
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const createRoom = () => {
     if (!playerName) {
       toast({
-        title: "Error",
-        description: "Please enter your name",
+        title: t("invalidNumber"),
+        description: t("enterValidNumber"),
         variant: "destructive",
       });
       return;
@@ -43,8 +46,8 @@ export const MainMenu = () => {
   const joinRoom = () => {
     if (!playerName) {
       toast({
-        title: "Error",
-        description: "Please enter your name",
+        title: t("invalidNumber"),
+        description: t("enterValidNumber"),
         variant: "destructive",
       });
       return;
@@ -55,8 +58,8 @@ export const MainMenu = () => {
   const playVsComputer = () => {
     if (!playerName) {
       toast({
-        title: "Error",
-        description: "Please enter your name",
+        title: t("invalidNumber"),
+        description: t("enterValidNumber"),
         variant: "destructive",
       });
       return;
@@ -76,33 +79,36 @@ export const MainMenu = () => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-100 to-gray-200 text-gray-900 p-8">
       <div className="max-w-md mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-teal-500">
-          Number Guessing Game
-        </h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-500 to-teal-500">
+            {t("gameTitle")}
+          </h1>
+          <LanguageSelector />
+        </div>
 
         <Card className="p-6 bg-white/80 border-gray-200 backdrop-blur-lg space-y-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-700">Your Name</label>
+            <label className="text-sm font-medium text-gray-700">{t("yourName")}</label>
             <Input
               value={playerName}
               onChange={(e) => setPlayerName(e.target.value)}
-              placeholder="Enter your name"
+              placeholder={t("enterName")}
               className="bg-white border-gray-300"
             />
           </div>
 
           <div className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">Time per Player</label>
+              <label className="text-sm font-medium text-gray-700">{t("timePerPlayer")}</label>
               <Select value={timePerPlayer} onValueChange={setTimePerPlayer}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select time" />
+                  <SelectValue placeholder={t("timePerPlayer")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="3">3 minutes</SelectItem>
-                  <SelectItem value="5">5 minutes</SelectItem>
-                  <SelectItem value="10">10 minutes</SelectItem>
-                  <SelectItem value="15">15 minutes</SelectItem>
+                  <SelectItem value="3">3 {t("minutes")}</SelectItem>
+                  <SelectItem value="5">5 {t("minutes")}</SelectItem>
+                  <SelectItem value="10">10 {t("minutes")}</SelectItem>
+                  <SelectItem value="15">15 {t("minutes")}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -112,20 +118,20 @@ export const MainMenu = () => {
                 onClick={playVsComputer}
                 className="w-full bg-gradient-to-r from-violet-500 to-teal-500 hover:from-violet-600 hover:to-teal-600"
               >
-                Play vs Computer
+                {t("playVsComputer")}
               </Button>
               <Button 
                 onClick={createRoom}
                 className="w-full bg-gradient-to-r from-violet-500 to-teal-500 hover:from-violet-600 hover:to-teal-600"
               >
-                Create Multiplayer Room
+                {t("createRoom")}
               </Button>
               <Button 
                 onClick={joinRoom}
                 variant="outline"
                 className="w-full"
               >
-                Join Room
+                {t("joinRoom")}
               </Button>
               <Button 
                 onClick={() => navigate('/how-to-play')}
@@ -133,7 +139,7 @@ export const MainMenu = () => {
                 className="w-full flex items-center gap-2"
               >
                 <HelpCircle className="w-4 h-4" />
-                How to Play
+                {t("howToPlay")}
               </Button>
             </div>
           </div>
