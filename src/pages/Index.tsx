@@ -239,6 +239,7 @@ const Index = () => {
             onGuess={handlePlayerGuess}
             showTimer={mode === "computer" || opponentJoined}
             opponentName={getOpponentName()}
+            mode={mode || "computer"}
           />
         )}
       </div>

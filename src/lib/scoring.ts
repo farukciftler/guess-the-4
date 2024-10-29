@@ -1,3 +1,5 @@
+import { Score } from './types';
+
 export const calculateScore = (turn: number, timeInSeconds: number): number => {
   // Base score starts at 1000
   let score = 1000;
