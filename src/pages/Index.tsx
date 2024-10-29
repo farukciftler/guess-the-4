@@ -98,20 +98,23 @@ const Index = () => {
     const guess = makeComputerGuess(computerGuesses);
     const result = evaluateGuess(playerNumber, guess);
     
-    setHistory(prev => [...prev, {
-      turn: turnCount,
-      guess,
-      result,
-      player: "computer"
-    }]);
+    // Ensure minimum 1 second delay for computer moves
+    setTimeout(() => {
+      setHistory(prev => [...prev, {
+        turn: turnCount,
+        guess,
+        result,
+        player: "computer"
+      }]);
 
-    if (result === "4+0-") {
-      setWinner("computer");
-      setWinningTurn(turnCount);
-    } else {
-      setCurrentTurn("player");
-      setTurnCount(prev => prev + 1);
-    }
+      if (result === "4+0-") {
+        setWinner("computer");
+        setWinningTurn(turnCount);
+      } else {
+        setCurrentTurn("player");
+        setTurnCount(prev => prev + 1);
+      }
+    }, 1000);
   };
 
   const handlePlayerGuess = (guess: string) => {

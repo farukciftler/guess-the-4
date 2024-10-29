@@ -1,6 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Computer, CircleDot } from "lucide-react";
 import { ColorLegend } from "./ColorLegend";
+import { useTranslation } from "react-i18next";
 
 interface GuessHistoryItem {
   turn: number;
@@ -15,7 +16,7 @@ interface ComputerGuessesProps {
 }
 
 export const ComputerGuesses = ({ history, opponentName }: ComputerGuessesProps) => {
-  // Filter only computer guesses and sort them by turn number to ensure proper order
+  const { t } = useTranslation();
   const computerGuesses = history
     .filter((entry) => entry.player === "computer")
     .sort((a, b) => a.turn - b.turn);
@@ -40,7 +41,16 @@ export const ComputerGuesses = ({ history, opponentName }: ComputerGuessesProps)
   return (
     <Card className="bg-violet-50 border-violet-200">
       <CardHeader className="pb-2 md:pb-3 space-y-2">
-        <ColorLegend />
+        <div className="flex gap-4 text-xs text-gray-600 items-center">
+          <div className="flex items-center gap-1">
+            <CircleDot className="w-3 h-3 text-violet-500 fill-violet-500" />
+            <span>{t("correctPosition")}</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <CircleDot className="w-3 h-3 text-amber-500 fill-amber-500" />
+            <span>{t("wrongPosition")}</span>
+          </div>
+        </div>
         <CardTitle className="flex items-center gap-2 text-violet-700 text-base md:text-lg">
           <Computer className="w-4 h-4 md:w-5 md:h-5" />
           {opponentName}

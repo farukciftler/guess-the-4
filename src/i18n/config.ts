@@ -41,6 +41,8 @@ i18n.use(initReactI18next).init({
         "gameDuration": "Game Duration",
         "winningTurn": "Winning Turn",
         "turn": "Turn",
+        "correctPosition": "Correct Position",
+        "wrongPosition": "Wrong Position",
       }
     },
     tr: {
@@ -80,6 +82,8 @@ i18n.use(initReactI18next).init({
         "gameDuration": "Oyun Süresi",
         "winningTurn": "Kazanan Tur",
         "turn": "Tur",
+        "correctPosition": "Doğru Pozisyon",
+        "wrongPosition": "Yanlış Pozisyon",
       }
     }
   },

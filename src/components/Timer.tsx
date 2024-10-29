@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Progress } from "@/components/ui/progress";
 import { useTranslation } from "react-i18next";
 
@@ -14,24 +14,34 @@ export const Timer = ({ isActive, currentTurn, onTimeUp, timeLimit = 300, player
   const [timeLeft, setTimeLeft] = useState(timeLimit);
   const { t } = useTranslation();
   const isMyTurn = currentTurn === player;
+  const lastUpdateTime = useRef(Date.now());
 
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let intervalId: NodeJS.Timeout;
     
     if (isActive && isMyTurn) {
-      interval = setInterval(() => {
+      intervalId = setInterval(() => {
+        const now = Date.now();
+        const deltaTime = Math.max(1000, now - lastUpdateTime.current); // Ensure minimum 1 second
+        lastUpdateTime.current = now;
+        
         setTimeLeft((prev) => {
-          if (prev <= 1) {
-            clearInterval(interval);
+          const newTime = Math.max(0, prev - Math.floor(deltaTime / 1000));
+          if (newTime <= 0) {
+            clearInterval(intervalId);
             onTimeUp();
             return 0;
           }
-          return prev - 1;
+          return newTime;
         });
       }, 1000);
     }
 
-    return () => clearInterval(interval);
+    return () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
   }, [isActive, isMyTurn, onTimeUp]);
 
   const minutes = Math.floor(timeLeft / 60);
