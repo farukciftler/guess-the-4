@@ -1,5 +1,6 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Computer, CircleDot } from "lucide-react";
+import { ColorLegend } from "./ColorLegend";
 
 interface GuessHistoryItem {
   turn: number;
