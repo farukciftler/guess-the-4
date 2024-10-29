@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
+import { useTranslation } from "react-i18next";
 
 interface PlayerGuessInputProps {
   onGuess: (guess: string) => void;
@@ -10,14 +11,24 @@ interface PlayerGuessInputProps {
 const PlayerGuessInput = ({ onGuess }: PlayerGuessInputProps) => {
   const [guess, setGuess] = useState("");
   const { toast } = useToast();
+  const { t } = useTranslation();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (guess[0] === "0") {
+      toast({
+        title: t("invalidNumber"),
+        description: t("invalidFirstDigit"),
+        variant: "destructive",
+      });
+      return;
+    }
+
     if (guess.length !== 4 || new Set(guess).size !== 4 || !/^\d+$/.test(guess)) {
       toast({
-        title: "Invalid guess",
-        description: "Please enter 4 unique digits",
+        title: t("invalidNumber"),
+        description: t("enterValidNumber"),
         variant: "destructive",
       });
       return;
@@ -35,7 +46,7 @@ const PlayerGuessInput = ({ onGuess }: PlayerGuessInputProps) => {
         value={guess}
         onChange={(e) => setGuess(e.target.value)}
         className="bg-white border-gray-300 flex-1"
-        placeholder="Enter your guess"
+        placeholder={t("enterValidNumber")}
       />
       <Button 
         type="submit"

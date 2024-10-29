@@ -38,7 +38,8 @@ export const ComputerGuesses = ({ history, opponentName }: ComputerGuessesProps)
 
   return (
     <Card className="bg-violet-50 border-violet-200">
-      <CardHeader className="pb-2 md:pb-3">
+      <CardHeader className="pb-2 md:pb-3 space-y-2">
+        <ColorLegend />
         <CardTitle className="flex items-center gap-2 text-violet-700 text-base md:text-lg">
           <Computer className="w-4 h-4 md:w-5 md:h-5" />
           {opponentName}

@@ -31,16 +31,24 @@ export const ActiveGame = ({
 }: ActiveGameProps) => {
   return (
     <div className="space-y-6 pb-24 relative min-h-[calc(100vh-16rem)]">
-      <div className="flex justify-center">
-        {showTimer && (
+      {showTimer && (
+        <div className="flex justify-center gap-8">
           <Timer
             isActive={gameStarted}
             currentTurn={currentTurn}
             onTimeUp={onTimeUp}
             timeLimit={timePerPlayer * 60}
+            player="player"
           />
-        )}
-      </div>
+          <Timer
+            isActive={gameStarted}
+            currentTurn={currentTurn}
+            onTimeUp={onTimeUp}
+            timeLimit={timePerPlayer * 60}
+            player="computer"
+          />
+        </div>
+      )}
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
         <PlayerGuesses history={history} />
