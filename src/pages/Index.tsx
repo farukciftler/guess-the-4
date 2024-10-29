@@ -14,6 +14,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { calculateScore, addScore } from "@/lib/scoring";
+import type { Score } from "@/lib/types";
 
 const Index = () => {
   const { roomId } = useParams();
@@ -38,6 +40,19 @@ const Index = () => {
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [hasCopied, setHasCopied] = useState(false);
   const [opponentJoined, setOpponentJoined] = useState(mode === "computer");
+
+  useEffect(() => {
+    if (winner) {
+      const score: Score = {
+        playerName,
+        turn: winningTurn || 0,
+        time: timeElapsed,
+        score: calculateScore(winningTurn || 0, timeElapsed),
+        date: new Date().toISOString()
+      };
+      addScore(score);
+    }
+  }, [winner, winningTurn, timeElapsed, playerName]);
 
   useEffect(() => {
     if (!playerName || !roomId) {

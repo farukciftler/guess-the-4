@@ -43,6 +43,8 @@ i18n.use(initReactI18next).init({
         "turn": "Turn",
         "correctPosition": "Correct Position",
         "wrongPosition": "Wrong Position",
+        "scoreboard": "Scoreboard",
+        "points": "points",
       }
     },
     tr: {
@@ -84,6 +86,8 @@ i18n.use(initReactI18next).init({
         "turn": "Tur",
         "correctPosition": "Doğru Pozisyon",
         "wrongPosition": "Yanlış Pozisyon",
+        "scoreboard": "Skor Tablosu",
+        "points": "puan",
       }
     }
   },

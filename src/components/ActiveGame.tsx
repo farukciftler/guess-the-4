@@ -27,8 +27,9 @@ export const ActiveGame = ({
   history,
   onGuess,
   showTimer,
-  opponentName
-}: ActiveGameProps) => {
+  opponentName,
+  mode
+}: ActiveGameProps & { mode: "computer" | "multiplayer" }) => {
   return (
     <div className="space-y-6 pb-24 relative min-h-[calc(100vh-16rem)]">
       {showTimer && (
@@ -40,13 +41,15 @@ export const ActiveGame = ({
             timeLimit={timePerPlayer * 60}
             player="player"
           />
-          <Timer
-            isActive={gameStarted}
-            currentTurn={currentTurn}
-            onTimeUp={onTimeUp}
-            timeLimit={timePerPlayer * 60}
-            player="computer"
-          />
+          {mode !== "computer" && (
+            <Timer
+              isActive={gameStarted}
+              currentTurn={currentTurn}
+              onTimeUp={onTimeUp}
+              timeLimit={timePerPlayer * 60}
+              player="computer"
+            />
+          )}
         </div>
       )}
       

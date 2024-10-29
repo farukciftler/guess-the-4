@@ -7,6 +7,7 @@ import { MainMenu } from "./pages/MainMenu";
 import { JoinRoom } from "./pages/JoinRoom";
 import { HowToPlay } from "./pages/HowToPlay";
 import Index from "./pages/Index";
+import { ScoreboardPage } from "./pages/ScoreboardPage";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ const App = () => (
           <Route path="/join" element={<JoinRoom />} />
           <Route path="/how-to-play" element={<HowToPlay />} />
           <Route path="/room/:roomId" element={<Index />} />
+          <Route path="/scoreboard" element={<ScoreboardPage />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

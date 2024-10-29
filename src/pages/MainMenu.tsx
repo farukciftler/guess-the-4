@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { HelpCircle } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { getStoredScores } from "@/lib/scoring";
+import { Scoreboard } from "@/components/Scoreboard";
 
 export const MainMenu = () => {
   const [playerName, setPlayerName] = useState("");
@@ -21,6 +23,7 @@ export const MainMenu = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const { t } = useTranslation();
+  const scores = getStoredScores();
 
   const createRoom = () => {
     if (!playerName) {
@@ -144,6 +147,21 @@ export const MainMenu = () => {
             </div>
           </div>
         </Card>
+      </div>
+      
+      {/* Scoreboard for desktop */}
+      <div className="hidden md:block mt-8">
+        <Scoreboard scores={scores} />
+      </div>
+      
+      <div className="space-y-3">
+        <Button 
+          onClick={() => navigate('/scoreboard')}
+          variant="outline"
+          className="w-full md:hidden"
+        >
+          {t("scoreboard")}
+        </Button>
       </div>
     </div>
   );
